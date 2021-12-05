@@ -1,3 +1,8 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import "@testing-library/jest-dom"
 import { fireEvent, screen } from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import DashboardFormUI from "../views/DashboardFormUI.js"
@@ -45,7 +50,7 @@ describe('Given I am connected as an Admin', () => {
 
   describe('When I am on Dashboard page and I click on arrow', () => {
     test('Then, tickets list should be unfolding, and cars should contain first and lastname', async () => {
-      
+
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -57,14 +62,14 @@ describe('Given I am connected as an Admin', () => {
 
       const dashboard = new Dashboard({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
-      })          
+      })
       const html = DashboardUI({ data: bills })
-   
+
       document.body.innerHTML = html
 
-      const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1)) 
-      const handleShowTickets2 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 2))    
-      const handleShowTickets3 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 3))    
+      const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
+      const handleShowTickets2 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 2))
+      const handleShowTickets3 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 3))
 
       const icon1 = screen.getByTestId('arrow-icon1')
       const icon2 = screen.getByTestId('arrow-icon2')
@@ -101,7 +106,7 @@ describe('Given I am connected as an Admin', () => {
         document, onNavigate, firestore, bills, localStorage: window.localStorage
       })
 
-      const handleEditTicket = jest.fn((e) => dashboard.handleEditTicket(e, bills[0], bills))   
+      const handleEditTicket = jest.fn((e) => dashboard.handleEditTicket(e, bills[0], bills))
       const iconEdit = screen.getByTestId('open-bill47qAXb6fIm2zOKkLzMro')
       iconEdit.addEventListener('click', handleEditTicket)
       userEvent.click(iconEdit)
@@ -207,10 +212,10 @@ describe('Given I am connected as Admin and I am on Dashboard page and I clicked
 describe("Given I am a user connected as Admin", () => {
   describe("When I navigate to Dashboard", () => {
     test("fetches bills from mock API GET", async () => {
-       const getSpy = jest.spyOn(firebase, "get")
-       const bills = await firebase.get()
-       expect(getSpy).toHaveBeenCalledTimes(1)
-       expect(bills.data.length).toBe(4)
+      const getSpy = jest.spyOn(firebase, "get")
+      const bills = await firebase.get()
+      expect(getSpy).toHaveBeenCalledTimes(1)
+      expect(bills.data.length).toBe(4)
     })
     test("fetches bills from an API and fails with 404 message error", async () => {
       firebase.get.mockImplementationOnce(() =>
@@ -218,7 +223,7 @@ describe("Given I am a user connected as Admin", () => {
       )
       const html = DashboardUI({ error: "Erreur 404" })
       document.body.innerHTML = html
-      const message = await screen.getByText(/Erreur 404/)
+      const message = await screen.getByText('Erreur 404')
       expect(message).toBeTruthy()
     })
     test("fetches messages from an API and fails with 500 message error", async () => {

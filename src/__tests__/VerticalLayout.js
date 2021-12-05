@@ -1,3 +1,8 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import "@testing-library/jest-dom"
 import { screen } from "@testing-library/dom"
 import VerticalLayout from "../views/VerticalLayout"
 import { localStorageMock } from "../__mocks__/localStorage.js"
