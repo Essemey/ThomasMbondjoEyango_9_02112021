@@ -61,3 +61,8 @@ textarea:focus, input:focus, select:focus {
 *[placeholder] {
   color: #0E5AE5 !important;
 }
+
+.error-text{
+  color: rgba(247, 66, 66, 0.849);
+  font-size: 12px;
+}

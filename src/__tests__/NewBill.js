@@ -37,6 +37,36 @@ describe("Given I am connected as an employee", () => {
         expect(handleClick).toHaveBeenCalled()
         expect(handleClick(badFile)).not.toBeTruthy()
       })
+      test('Send a good file after send a bad file', () => {
+        const html = NewBillUI()
+        document.body.innerHTML = html
+        const onNavigate = null
+        const firestore = { ref: jest.fn((test) => test) }
+        const localStorage = null
+        const badFile = new File(['(⌐□_□)'], 'chucknorris.pnj', { type: 'image/pnj' })
+        const goodFile = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
+
+        const newBill = new NewBill({ document, onNavigate, firestore, localStorage })
+        //const handleClick = jest.fn((file) => extensions.find(ext => ext === file.split('.')[1]) ? 1 : null)
+        const spy = jest.spyOn(newBill, 'handleChangeFile')
+        const fileInput = screen.getByTestId('file')
+
+        fileInput.removeEventListener('change', newBill.handleChangeFile)
+        fileInput.addEventListener('change', spy)
+
+        fireEvent.change(fileInput, { target: { files: [badFile] } })
+
+        expect(screen.getByTestId('file-error')).toBeTruthy()
+
+        console.log(screen.getByTestId('file-error'))
+
+        const removeError = jest.fn(() => newBill.removeError(screen.getByTestId('file-error')))
+
+        removeError()
+
+        expect(screen.queryByTestId('file-error')).toBeNull()
+        expect(removeError).toHaveBeenCalled()
+      })
     })
     describe('When I submit NewBill form', () => {
       test("Send incomplete data", () => {
@@ -172,6 +202,8 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+
 
 // test d'intégration POST
 describe("Given I am a user connected as Employee", () => {

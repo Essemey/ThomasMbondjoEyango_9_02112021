@@ -18,11 +18,22 @@ export default class NewBill {
 
   handleChangeFile = e => {
     const extensions = ['jpg', 'jpeg', 'png']
+    const error = this.document.querySelector('.error-text')
+    const fileDom = this.document.querySelector(`input[data-testid="file"]`)
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length - 1]
     const fileExtension = file?.type.split('/')[1]
-    if (!extensions.find(extension => extension === fileExtension)) return null
+    if (!extensions.find(extension => extension === fileExtension)) {
+      if (!error) { //Si on a pas déja une erreur, ca évite d'en créer à l'infini
+        fileDom.insertAdjacentHTML('beforebegin',
+          `<p class="error-text" data-testid="file-error">
+            Veuillez sélectionner un fichier contenant l'extension suivante: 'jpg', 'jpeg', 'png'
+          </p>`)
+      }
+      return null
+    }
+    this.removeError(error)
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -53,6 +64,10 @@ export default class NewBill {
     }
     this.createBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
+  }
+
+  removeError = (error) => {
+    if (error) error.remove()
   }
 
   // not need to cover this function by tests
